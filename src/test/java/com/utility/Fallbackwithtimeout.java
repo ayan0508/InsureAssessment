@@ -7,7 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Fallbackwithtimeout {
-	private static final long PRIMARY_TIMEOUT_SEC   = 20;
+	private static final long PRIMARY_TIMEOUT_SEC   = 30;
     private static final long FALLBACK_TIMEOUT_SEC  = 20;
     public static <T> T untilWithFallback(WebDriver driver,ExpectedCondition<T> condition) {
         try {
