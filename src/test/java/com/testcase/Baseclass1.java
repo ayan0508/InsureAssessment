@@ -53,7 +53,6 @@ public class Baseclass1 {
     // Address Page
     private static final By Address = By.id("address-input-autocomplete"); // Address auto-complete input
     private static final By suggestionbar = By.xpath("//div[@class='pac-container pac-logo hdpi']"); // Dropdown for address suggestions
-    private static final By  suggestionItems = By.xpath("//div[@class='pac-container pac-logo hdpi']/div");
     private static final By canfindloc = By.xpath("//div[@id='btn-toggle-autocomplete']"); // Button for manual address entry
     
     
@@ -77,292 +76,172 @@ public class Baseclass1 {
     }
 
     public static void main(String[] args) throws InterruptedException {
- 
-	    
-		WebDriver driver=new ChromeDriver();
-		driver.manage().window().maximize();
-		WebDriverWait wait= new WebDriverWait(driver, Duration.ofSeconds(10));
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		driver.get("https://d28j9pfwubj8q5.cloudfront.net/5U5PU/4oKeg/welcome"); //https://d28j9pfwubj8q5.cloudfront.net/5U5PU/4oKeg/UGFnZV8x
-		
-		//click on "start new application"
-		
-		System.out.println("Waiting for initial page load...");
+
+        // --- 1. Test Setup ---
+        WebDriver driver = new ChromeDriver();
+        driver.manage().window().maximize();
+
+        // Standard explicit wait for common conditions (10 seconds).
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        // Utility initializations for advanced interactions.
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        Actions actions = new Actions(driver);
+
+        // Navigate to the application's starting URL.
+        driver.get("https://d28j9pfwubj8q5.cloudfront.net/5U5PU/4oKeg/welcome");
+
+        // --- 2. Welcome Page ---
+        System.out.println("Starting application from the Welcome Page...");
+        // Wait for the initial page loader to disappear before proceeding.
         wait.until(ExpectedConditions.invisibilityOfElementLocated(spinnerLocator));
-		// get started button
+
+        // Click "Get Started" to begin the form.
         WebElement getStartedBtn = wait.until(ExpectedConditions.elementToBeClickable(getStartedBtnLocator));
         getStartedBtn.click();
-        
-        //wait for button is disable and loading after the loader will come 
         waitForPageTransition(driver, wait);
-        
-		//enter the Employee 
-        
+
+        // ---  Initial Questions (Applicant type)---
+        System.out.println("Answering initial questions...");
         WebElement employeeOption = wait.until(ExpectedConditions.elementToBeClickable(employeeOptionLocator));
         employeeOption.click();
-        
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-       
-        
+        waitForPageTransition(driver, wait);
+
+        //----Select product(s)----
         driver.findElement(By.xpath("//div[@id='label-item-3']")).click();
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-		// enter the first and last name 
-        WebElement user_firstname=Handlewait.waitforelementvisible(wait, firstname, driver);
-        WebElement user_lastname=driver.findElement(lastname);
+        waitForPageTransition(driver, wait);
+
+        // ---  Personal Details (Your name)---
+        System.out.println("Filling out Personal Details...");
+        WebElement user_firstname = Handlewait.waitforelementvisible(wait, firstname, driver);
         user_firstname.sendKeys("Ayan");
-        user_lastname.sendKeys("Banerjee");
+        driver.findElement(lastname).sendKeys("Banerjee");
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        
-        WebElement user_email=Handlewait.waitforelementvisible(wait, email, driver);
+        waitForPageTransition(driver, wait);
+
+        //---your email----
+        WebElement user_email = Handlewait.waitforelementvisible(wait, email, driver);
         user_email.sendKeys("ayanbanerjee@gmail.com");
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        WebElement salary =Handlewait.waitforelementvisible(wait, annualsalary, driver);
-        salary.sendKeys("98754");
+        waitForPageTransition(driver, wait);
+
+        // --- Annual Salary ---
+        System.out.println("Filling out Financial Information...");
+        Handlewait.waitforelementvisible(wait, annualsalary, driver).sendKeys("98754");
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        WebElement sliderElement =Handlewait.waitforelementvisible(wait, slider, driver);
-        Actions actions = new Actions(driver);
+        waitForPageTransition(driver, wait);
+
+        // -----Select the amount of Basic Life coverage------.
+        WebElement sliderElement = Handlewait.waitforelementvisible(wait, slider, driver);
         actions.dragAndDropBy(sliderElement, 150, 0).perform();
-        String finalValue = sliderElement.getAttribute("aria-valuenow");
-        System.out.println("Final Slider Value after moving: " + finalValue);
+        System.out.println("Final Slider Value: " + sliderElement.getAttribute("aria-valuenow"));
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        
-        WebElement Date_of_birth=Handlewait.waitforelementvisible(wait, DOB, driver);
-        Date_of_birth.sendKeys("05-08-2000");
+        waitForPageTransition(driver, wait);
+
+        // --- Date of Birth ---
+        System.out.println("Filling out remaining Personal Details...");
+        Handlewait.waitforelementvisible(wait, DOB, driver).sendKeys("05-08-2000");
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        
-        WebElement gender_of_person=Handlewait.waitforelementvisible(wait, gender, driver);
-        gender_of_person.click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        
-        WebElement phone_no=Handlewait.waitforelementvisible(wait, phone, driver);
-        phone_no.sendKeys("9193394277");
+        waitForPageTransition(driver, wait);
+
+        //---gender---
+        Handlewait.waitforelementvisible(wait, gender, driver).click();
+        waitForPageTransition(driver, wait);
+
+        //--phone no----
+        Handlewait.waitforelementvisible(wait, phone, driver).sendKeys("9193394277");
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        
-        WebElement address=Handlewait.waitforelementvisible(wait, Address, driver);
-        address.click(); // Ensure focus
-        actions.sendKeys(address, "kol").perform();
+        waitForPageTransition(driver, wait);
+
+        // --- 7. Address Information with Fallback ---
+        System.out.println("Filling out Address Information...");
+        WebElement addressInput = Handlewait.waitforelementvisible(wait, Address, driver);
+        addressInput.click();
+        actions.sendKeys(addressInput, "kol").perform();
         Fallbackwithtimeout.sleeptheThread(driver);
-        driver.manage().window().minimize(); 
+
+        // This minimize/maximize sequence is a workaround to force the UI to give the human mimic behabiour to trigger the google map  
+        // and reliably display the address suggestion dropdown if it's flaky.
+        driver.manage().window().minimize();
         Fallbackwithtimeout.sleeptheThread(driver);
-        driver.manage().window().maximize(); // Bring it back
+        driver.manage().window().maximize();
         Fallbackwithtimeout.sleeptheThread(driver);
-        WebElement parent = driver.findElement(suggestionbar);
-        
+
+        // Try to select from auto-suggestions; if it fails, enter manually.
         try {
-        	Handlewait.waitforelementvisible(wait, suggestionItems, driver);
-        	List<WebElement> suggestionElements=parent.findElements(suggestionItems);
-        	List<WebElement> items= suggestionElements.size() >= 3 ? suggestionElements : null;
-        	items.get(2).click();
-        	Fallbackwithtimeout.sleeptheThread(driver);
-        }
-        catch(Exception e){
-        	driver.findElement(canfindloc).click();
-        	driver.findElement(By.xpath("//input[@id='address-input-street']")).sendKeys("test123");
-        	driver.findElement(By.id("address-input-city")).sendKeys("Test city");
-        	driver.findElement(By.id("address-input-state")).click();
-        	By location_dropdown=By.xpath("//div[@tabindex='0']//div[@id]");
-        	wait.until(ExpectedConditions.visibilityOfElementLocated(location_dropdown));
-        	List<WebElement> items=driver.findElements(location_dropdown);
-        	if (!items.isEmpty()) {
-        	    items.get(0).click(); 
-        	}
+            WebElement parent = Handlewait.waitforelementvisible(wait, suggestionbar, driver);  //wait for suggestions appear 
+            List<WebElement> suggestions = parent.findElements(By.xpath(".//div"));
+            if (suggestions.size() >= 3) {
+                suggestions.get(2).click(); // Click the third suggestion
+            }
+            Fallbackwithtimeout.sleeptheThread(driver);
+        } catch (Exception e) {
+            System.out.println("Address suggestion failed. Entering address manually.");
+            driver.findElement(canfindloc).click();
+            driver.findElement(By.xpath("//input[@id='address-input-street']")).sendKeys("123 Test Street");
+            driver.findElement(By.id("address-input-city")).sendKeys("Testville");
+            driver.findElement(By.id("address-input-state")).click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@tabindex='0']//div[@id]"))).click();
             driver.findElement(By.id("address-input-zipcode")).sendKeys("10369");
         }
-        
+
+        // Agree to terms and continue.
         driver.findElement(By.id("address-check-auth-release-agree")).click();
-        WebElement concent= driver.findElement(By.id("address-check-consent-business"));
         actions.scrollByAmount(0, 100).build().perform();
-        concent.click();
-        actions.scrollByAmount(0, 900).build().perform();
-        WebElement cliclbutton=driver.findElement(nextbutton);
-        cliclbutton.click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        
-        WebElement heightButton = Handlewait.waitforelementvisible(wait, height, driver);
-        heightButton.click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(menuLocator));
-        System.out.println("Menu is now visible.");
-        WebElement lastElementInList = driver.findElement(menuLocator);
-        actions.scrollToElement(lastElementInList).perform(); // This performs the scroll
-        System.out.println("Successfully scrolled using Actions class.");
+        driver.findElement(By.id("address-check-consent-business")).click();
+        actions.scrollByAmount(0, 900).build().perform();    // show the next button so with action class I scroll the page and click 
+        driver.findElement(nextbutton).click();
+        waitForPageTransition(driver, wait);
+
+        // --- 8. Physical Details ---
+        System.out.println("Filling out Physical Details...");
+        Handlewait.waitforelementvisible(wait, height, driver).click();         //wait to appear the height item and click to open the dropdown
+        wait.until(ExpectedConditions.visibilityOfElementLocated(menuLocator));   // wait to open the height dropdown
+        WebElement lastElementInList = driver.findElement(menuLocator);  
+        actions.scrollToElement(lastElementInList).perform();  // click last element
         lastElementInList.click();
-        driver.findElement(By.id("input-weight")).sendKeys("77");
+
+        driver.findElement(By.id("input-weight")).sendKeys("77");  ///select the weight
         driver.findElement(nextbutton).click();
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
-        
-        //taking medication 
-        driver.findElement(By.xpath("//label[@tabindex='2']")).click();
-        Handlewait.waitfornextelemet(wait, nextbutton, spinnerLocator);
-        
-        
-        //In the past ten years, or as indicated below, have you been treated for, or been diagnosed by a 
-        js.executeScript("window.scrollBy(0, 900);");
-        actions.scrollByAmount(0, 900).build().perform();
-        WebElement non_of_above=driver.findElement(By.xpath("//label[@tabindex='13']"));
-        non_of_above.click();
+        waitForPageTransition(driver, wait);
+
+        // --- Are you currently taking any medication? ---
+        System.out.println("Answering Medical History questions...");
+        driver.findElement(By.xpath("//label[@tabindex='2']")).click(); // "No" to taking medication
+        waitForPageTransition(driver, wait);
+
+        //In the past ten years, or as indicated below, have you been treated for, or been diagnosed by a member
+        js.executeScript("window.scrollBy(0, 900);");   //scroll to click the button
+        driver.findElement(By.xpath("//label[@tabindex='13']")).click(); // "None of the above"
         driver.findElement(nextbutton).click();
-        //Handlewait.waitfornextelemet(wait, nextbutton, spinnerLocator);
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        //In the past ten years, or as indicated below, have you been treated for, or been diagnosed by a member of the medical profession as having any of the following:
-        
-        
-        js.executeScript("window.scrollBy(0, 900);");
+        waitForPageTransition(driver, wait);
+
+        //In the past ten years, or as indicated below, have you been treated for, or been diagnosed by a member
         WebElement label = driver.findElement(By.xpath("//label[@tabindex='14']"));
         js.executeScript("arguments[0].scrollIntoView(true);", label);
-        label.click();
+        label.click(); // Another "None of the above"
         driver.findElement(nextbutton).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        //Have you consulted, been advised or been examined by any healthcare provider for any other medical reason within the last ten years, or as previously indicated?
-        driver.findElement(By.xpath("//label[@tabindex='2']")).click();
-      //wait for button is disable and loading after the loader will come 
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-        
-        //this is fallback mechanism with first duration is 30 sec and next duration is another 20 sec 
-        Fallbackwithtimeout.untilWithFallback(driver, drv -> {
-            boolean gone = ExpectedConditions.invisibilityOfElementLocated(spinnerLocator).apply(drv);
-            return gone;
-        });
-        
-        
+        waitForPageTransition(driver, wait);
+
+        //Have you consulted, been advised or been examined by any healthcare provider for any oth
+        driver.findElement(By.xpath("//label[@tabindex='2']")).click(); // "No" to other medical reasons
+        waitForPageTransition(driver, wait);
+
+        // --- 10. Final Submission ---
+        System.out.println("Submitting the application...");
         js.executeScript("window.scrollBy(0, 900);");
         driver.findElement(By.id("first_name")).sendKeys("ayan");
         driver.findElement(By.id("last_name")).sendKeys("Banerjee");
-        
-        //WebElement firstname=driver.findElement(By.id("first_name"));
-        //WebElement lastname=driver.findElement(By.id("last_name"));
-        //js.executeScript("arguments[0].value='Ayan';", firstname);
-        //js.executeScript("arguments[0].value='Ayan';", lastname);
 
         driver.findElement(finalsubmit).click();
+
+        // Wait for the final processing spinner to appear and then disappear.
         wait.until(ExpectedConditions.presenceOfElementLocated(spinnerLocator));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(spinnerLocator));
+
+        System.out.println("Application submitted successfully!");
+        // Consider adding a verification step here to confirm submission.
          driver.quit(); //  close the browser at the end.
     }
-
-    
- 
 }
