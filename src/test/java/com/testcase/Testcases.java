@@ -1,7 +1,5 @@
 package com.testcase;
 
-
-
 import java.time.Duration;
 import java.util.List;
 
@@ -13,84 +11,49 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import com.utility.*; // Assuming this contains Fallbackwithtimeout and Handlewait
+import org.testng.annotations.*;
+import com.insure.*;
+import com.utility.Fallbackwithtimeout;
+import com.utility.Handlewait;
 
-/**
- * Test script for completing the multi-page user application form.
- *
- * This script automates the process of filling out the application from the
- * welcome page through various personal, financial, and medical information sections,
- * concluding with the final submission.
- */
-public class Baseclass1 {
-
-    // --- Locators for Web Elements ---
-    // Grouping locators makes them easier to manage.
-
-    // General & Navigation
-    private static final By spinnerLocator = By.cssSelector("span[aria-label='spinner']"); // Global loading spinner
-    private static final By nextbutton = By.xpath("//button[@id='btn-next']"); // The 'Next' button used on most pages
-    private static final By finalsubmit = By.xpath("//button[@type='submit']"); // Final 'Submit' button on the last page
-
-    // Welcome Page
-    private static final By getStartedBtnLocator = By.cssSelector("button[title='Get Started']");
-    private static final By employeeOptionLocator = By.xpath("//input[@id='option-item-0']");
-
-    // Personal Details Page
-    private static final By firstname = By.id("first_name");
-    private static final By lastname = By.id("last_name");
-    private static final By email = By.id("email-input");
-    private static final By DOB = By.id("date-input");
-    private static final By gender = By.xpath("//div[contains(text(),'Male')]");
-    private static final By phone = By.id("input-phone");
-    private static final By height = By.id("dropdown-height");
-    private static final By menuLocator = By.xpath("//div[@role='menuitem'][last()-1]"); // A specific item in a dropdown menu
-
-    // Financial Information Page
-    private static final By annualsalary = By.id("input-number");
-    private static final By slider = By.cssSelector(".rc-slider-handle"); // The handle of a slider control
-
-    // Address Page
-    private static final By Address = By.id("address-input-autocomplete"); // Address auto-complete input
-    private static final By suggestionbar = By.xpath("//div[@class='pac-container pac-logo hdpi']"); // Dropdown for address suggestions
-    private static final By canfindloc = By.xpath("//div[@id='btn-toggle-autocomplete']"); // Button for manual address entry
-    
-    
-    /**
-     * A reusable helper method to handle the common page transition logic.
-     * This method waits for the 'Next' button to become disabled (indicating a
-     * server request is in progress) and then uses the custom fallback wait for
-     * the loading spinner to disappear, ensuring the next page is fully loaded.
-     *
-     * @param driver The WebDriver instance.
-     * @param wait   The WebDriverWait instance.
-     */
-    private static void waitForPageTransition(WebDriver driver, WebDriverWait wait) {
-        // Step 1: Confirm an action has started by waiting for the 'Next' button to be disabled.
-        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
-
-        // Step 2: Use the robust fallback wait to ensure the loading spinner is gone.
-        // This is crucial for handling pages with variable load times.
-        Fallbackwithtimeout.untilWithFallback(driver,
-                ExpectedConditions.invisibilityOfElementLocated(spinnerLocator));
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-
-        // --- 1. Test Setup ---
-        WebDriver driver = new ChromeDriver();
+public class Testcases {
+	 private WebDriver driver;
+	 private WebDriverWait wait;
+	 private Actions actions;
+	// private JavascriptExecutor js;
+	 // General & Navigation
+	    private static final By spinnerLocator = By.cssSelector("span[aria-label='spinner']"); // Global loading spinner
+	    private static final By nextbutton = By.xpath("//button[@id='btn-next']"); // The 'Next' button used on most pages
+	    private static final By finalsubmit = By.xpath("//button[@type='submit']"); // Final 'Submit' button on the last page
+	    private static final By getStartedBtnLocator = By.cssSelector("button[title='Get Started']");
+	    private static final By employeeOptionLocator = By.xpath("//input[@id='option-item-0']");
+	    private static final By firstname = By.id("first_name");
+	    private static final By lastname = By.id("last_name");
+	    private static final By email = By.id("email-input");
+	    private static final By DOB = By.id("date-input");
+	    private static final By gender = By.xpath("//div[contains(text(),'Male')]");
+	    private static final By phone = By.id("input-phone");
+	    private static final By height = By.id("dropdown-height");
+	    private static final By menuLocator = By.xpath("//div[@role='menuitem'][last()-1]"); // A specific item in a dropdown menu
+	    private static final By annualsalary = By.id("input-number");
+	    private static final By slider = By.cssSelector(".rc-slider-handle"); // The handle of a slider control
+	    private static final By Address = By.id("address-input-autocomplete"); // Address auto-complete input
+	    private static final By suggestionbar = By.xpath("//div[@class='pac-container pac-logo hdpi']"); // Dropdown for address suggestions
+	    private static final By canfindloc = By.xpath("//div[@id='btn-toggle-autocomplete']"); // Button for manual address entry
+	    
+	@BeforeMethod
+    public void setup()
+    {
+    	driver = new ChromeDriver();
         driver.manage().window().maximize();
-
-        // Standard explicit wait for common conditions (10 seconds).
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        // Utility initializations for advanced interactions.
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        Actions actions = new Actions(driver);
-
-        // Navigate to the application's starting URL.
-        driver.get("https://d28j9pfwubj8q5.cloudfront.net/5U5PU/4oKeg/welcome");
-
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        actions = new Actions(driver);
+       
+        driver.get("https://d28j9pfwubj8q5.cloudfront.net/5U5PU/4oKeg/welcome");  // Navigate to the application's starting URL.
+    }
+	@Test()   //retryAnalyzer = RetryAnalyzer.class (for only retry one test cases )
+    public void completeApplicationForm() {
+		 JavascriptExecutor js = (JavascriptExecutor) driver;
         // --- 2. Welcome Page ---
         System.out.println("Starting application from the Welcome Page...");
         // Wait for the initial page loader to disappear before proceeding.
@@ -206,19 +169,16 @@ public class Baseclass1 {
         driver.findElement(nextbutton).click();
         waitForPageTransition(driver, wait);
 
-        // --- Are you currently taking any medication? ---
-        System.out.println("Answering Medical History questions...");
-        driver.findElement(By.xpath("//label[@tabindex='2']")).click(); // "No" to taking medication
-        waitForPageTransition(driver, wait);
+       
 
         //In the past ten years, or as indicated below, have you been treated for, or been diagnosed by a member
         js.executeScript("window.scrollBy(0, 900);");   //scroll to click the button
-        driver.findElement(By.xpath("//label[@tabindex='13']")).click(); // "None of the above"
+        driver.findElement(By.xpath("//label[@tabindex='11']")).click(); // "None of the above"
         driver.findElement(nextbutton).click();
         waitForPageTransition(driver, wait);
 
         //In the past ten years, or as indicated below, have you been treated for, or been diagnosed by a member
-        WebElement label = driver.findElement(By.xpath("//label[@tabindex='14']"));
+        WebElement label = driver.findElement(By.xpath("//label[@tabindex='12']"));
         js.executeScript("arguments[0].scrollIntoView(true);", label);
         label.click(); // Another "None of the above"
         driver.findElement(nextbutton).click();
@@ -226,6 +186,11 @@ public class Baseclass1 {
 
         //Have you consulted, been advised or been examined by any healthcare provider for any oth
         driver.findElement(By.xpath("//label[@tabindex='2']")).click(); // "No" to other medical reasons
+        waitForPageTransition(driver, wait);
+        
+        // --- Are you currently taking any medication? ---
+        System.out.println("Answering Medical History questions...");
+        driver.findElement(By.xpath("//label[@tabindex='2']")).click(); // "No" to taking medication
         waitForPageTransition(driver, wait);
 
         // --- 10. Final Submission ---
@@ -241,7 +206,18 @@ public class Baseclass1 {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(spinnerLocator));
 
         System.out.println("Application submitted successfully!");
-        // Consider adding a verification step here to confirm submission.
-         driver.quit(); //  close the browser at the end.
+	}
+	@AfterMethod
+    public void teardown() {
+        if (driver != null) {
+         //   driver.quit();
+        }
     }
+    private static void waitForPageTransition(WebDriver driver, WebDriverWait wait) {
+        wait.until(ExpectedConditions.attributeToBe(nextbutton, "disabled", "true"));
+        Fallbackwithtimeout.untilWithFallback(driver,
+                ExpectedConditions.invisibilityOfElementLocated(spinnerLocator));
+    }
+
+    
 }
